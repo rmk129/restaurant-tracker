@@ -30,7 +30,7 @@ if __name__ == '__main__':
         r1 = Restaurant(name = "Rio's Tacos", cuisine = "Mexican")
         r2 = Restaurant(name = "Emilio's Pizza", cuisine = "Italian")
         r3 = Restaurant(name = "Royal India", cuisine = "Indian")
-        r4 = Restaurant(name = "Han Dynasty", cusine = "Chinese")
+        r4 = Restaurant(name = "Han Dynasty", cuisine = "Chinese")
         r5 = Restaurant(name = "Bob's Burgers", cuisine = "American")
         db.session.add_all([r1, r2, r3, r4, r5])
         db.session.commit()

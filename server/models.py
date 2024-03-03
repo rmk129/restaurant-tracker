@@ -29,7 +29,7 @@ class User(db.Model, SerializerMixin):
     @password_hash.setter
     def password_hash(self, password):
         password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
-        self._password_hash, password_hash.decode('utf-8')
+        self._password_hash = password_hash.decode('utf-8')
 
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
@@ -54,10 +54,8 @@ class Review(db.Model, SerializerMixin):
 
     @validates('score')
     def validate_score(self, key, score):
-        if not score.isdigit():
-            raise ValueError("Score must be a number")
-        elif len(score) < 1 or len(score) > 10:
-            raise ValueError("Score must be a number between 0 to 10.")
+        if not isinstance(score, int) or score < 0 or score > 10:
+            raise ValueError("Invalid score value. Must be an integer between 1 to 10.")
         return score
     
     @validates('message')
