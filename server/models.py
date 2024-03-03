@@ -1,9 +1,11 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
-from config import bcrypt
+from sqlalchemy.ext.hybrid import hybrid_property
+
 
 from config import db
+from config import bcrypt
 
 # Models go here!
 class User(db.Model, SerializerMixin):
@@ -20,7 +22,7 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<User {self.id}, {self.username}, {self.password}>'
     
-    @hybrid_porperty
+    @hybrid_property
     def password_hash(self):
         return self._password_hash
     
@@ -41,13 +43,14 @@ class Review(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer)
     message = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.Intenger, db.ForeignKey(users.id))
-    restaurant_id = db.Column(db.Intenger, db.ForeignKey(restaurants.id))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'))
 
     __table_args__ = (db.CheckConstraint('(score > 0) or (score <= 10)'),)
 
     user = db.relationship('User', back_populates="reviews")
-    restaurant = db.relatonship('Restaurant', back_populates="reviews")
+    restaurant = db.relationship('Restaurant', back_populates="reviews")
+
 
     @validates('score')
     def validate_score(self, key, score):
@@ -71,8 +74,8 @@ class Restaurant(db.Model, SerializerMixin):
     __tablename__ = 'restaurants'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.string, nullable=False, unique=True)
-    cuisine = db.Column(db.string, nullable=False)
+    name = db.Column(db.String, nullable=False, unique=True)
+    cuisine = db.Column(db.String, nullable=False)
 
     reviews = db.relationship('Review', back_populates="restaurant", cascade='all, delete-orphan')
     users = association_proxy('reviews', 'User', creator=lambda user_obj: Review(user=user_obj))
