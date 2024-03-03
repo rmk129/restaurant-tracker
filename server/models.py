@@ -1,6 +1,7 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates
+from config import bcrypt
 
 from config import db
 
@@ -10,7 +11,7 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, db.CheckConstraint('len(username) > 5'), nullable=False, unique=True)
-    password = db.Column(db.String, db.CheckConstraint('len(password) > 5'))
+    _password_hash = db.Column(db.String, db.CheckConstraint('len(password) > 5'), nullable=False)
 
     reviews = db.relationship('Review', back_populates="user", cascade='all, delete-orphan')
     restaurants = association_proxy('reviews', 'restaurant', creator=lambda restaurant_obj: Review(restaurant=restaurant_obj))
@@ -18,6 +19,20 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<User {self.id}, {self.username}, {self.password}>'
+    
+    @hybrid_porperty
+    def password_hash(self):
+        return self._password_hash
+    
+    @password_hash.setter
+    def password_hash(self, password):
+        password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
+        self._password_hash, password_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+    
+
     
 
 class Review(db.Model, SerializerMixin):
@@ -28,6 +43,8 @@ class Review(db.Model, SerializerMixin):
     message = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Intenger, db.ForeignKey(users.id))
     restaurant_id = db.Column(db.Intenger, db.ForeignKey(restaurants.id))
+
+    __table_args__ = (db.CheckConstraint('(score > 0) or (score <= 10)'),)
 
     user = db.relationship('User', back_populates="reviews")
     restaurant = db.relatonship('Restaurant', back_populates="reviews")
@@ -71,8 +88,6 @@ class Restaurant(db.Model, SerializerMixin):
         if not y:
             raise ValueError("Cuisine needs to be listed in the category")
         return cuisine
-
-
 
 
     def __repr__(self):
