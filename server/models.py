@@ -13,7 +13,7 @@ class User(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, db.CheckConstraint('len(username) > 5'), nullable=False, unique=True)
-    _password_hash = db.Column(db.String, db.CheckConstraint('len(password) > 5'), nullable=False)
+    _password_hash = db.Column(db.String, db.CheckConstraint('len(password) > 5'))
 
     reviews = db.relationship('Review', back_populates="user", cascade='all, delete-orphan')
     restaurants = association_proxy('reviews', 'restaurant', creator=lambda restaurant_obj: Review(restaurant=restaurant_obj))
