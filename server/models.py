@@ -20,7 +20,7 @@ class User(db.Model, SerializerMixin):
 
 
     def __repr__(self):
-        return f'<User {self.id}, {self.username}, {self.password}>'
+        return f'<User {self.id}, {self.username}, {self._password_hash}>'
     
     @hybrid_property
     def password_hash(self):
