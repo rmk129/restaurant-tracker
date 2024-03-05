@@ -5,6 +5,7 @@
 # Remote library imports
 from flask import request, make_response, session
 from flask_restful import Resource
+from sqlalchemy.exc import IntegrityError
 
 # Local imports
 from config import app, db, api
@@ -82,13 +83,104 @@ class Logout(Resource):
             return {}, 204
         else:
             return {}, 401
+        
+
+class ReviewsIndex(Resource):
+    def get(self):
+        reviews = []
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            for rev in Review.query.all():
+                if user.id == rev.user_id:
+                    add_review = {
+                        'id': rev.id,
+                        'score': rev.score,
+                        'message': rev.message
+                    }
+                    reviews.append(add_review)
+
+            return make_response(reviews, 200)
+        else:
+            return {}, 401
+        
+    def post(self):
+        if not session.get('user_id'):
+            return {'error':'Unauthorized'}, 401
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        data = request.get_json()
+
+        try:
+            new_review = Review(
+                score=data['score'],
+                message=data['message'],
+                user_id=user.id,
+                restaurant_id=data['restaurant_id']
+            )
+
+            db.session.add(new_review)
+            db.session.commit()
+
+            response_data = {
+                'score': new_review.score,
+                'message': new_review.message,
+                'user': user.username
+            }
+
+            return response_data, 201
+        except IntegrityError:
+            # Handle any integrity constraint violations (e.g., duplicate username)
+            db.session.rollback()
+            return {'error': 'Username already exists'}, 422
+        
+
+class ReviewsById(Resource):
+    def get(self, id):
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            rev = Review.query.filter_by(id=id).first()
+            if user.id == rev.user_id:
+                return make_response(rev.to_dict(), 200)
+        else:
+            return {}, 401
+        
+    def patch(self, id):
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            rev = Review.query.filter_by(id=id).first()
+            if user.id == rev.user_id:
+                for attr in request.form:
+                    setattr(rev, attr, request.form[attr])
+
+            db.session.add(rev)
+            db.session.commit()
+
+            response_dict = rev.to_dict()
+
+            response = make_response(response_dict, 200)
+            return response
+        
+    def delete(self, id):
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            rev = Review.query.filter_by(id=id).first()
+            if user.id == rev.user_id:
+                db.session.delete(rev)
+                db.session.commit()
+
+            response_dict = {"message": "review successfully deleted"}
+            response = make_response(response_dict, 200)
+            return response
+
+
+    
 
 
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')
 api.add_resource(Logout, '/logout', endpoint='logout')
-
+api.add_resource(ReviewsIndex, '/reviews', endpoint='reviews')
+api.add_resource(ReviewsById, '/reviews/<int:id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
