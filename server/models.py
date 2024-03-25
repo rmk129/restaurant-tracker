@@ -60,7 +60,7 @@ class Review(db.Model, SerializerMixin):
     
     @validates('message')
     def validate_message(self, key, message):
-        if len(message) > 201 or len(message) < 10:
+        if len(message) < 201 or len(message) > 10:
             raise ValueError("Reviews must be between 10 to 200 characters long")
         return message
 

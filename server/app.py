@@ -84,6 +84,62 @@ class Logout(Resource):
         else:
             return {}, 401
         
+class AllRestaurants(Resource):
+    def get(self):
+        restaurants = []
+        for res in Restaurant.query.all():
+            add_restaurant = {
+                'id': res.id,
+                'name': res.name,
+                'cuisine': res.cuisine
+            }
+            restaurants.append(add_restaurant)
+        return make_response(restaurants, 200)
+    
+    def post(self):
+        data = request.get_json()
+        name = data['name']
+        for res in Restaurant.query.all():
+            if res.name.lower() == name.lower():
+                response = {"message": "Restaurant already exists in the system"}
+                return make_response(response)
+            
+        try:
+            new_restaurant = Restaurant(
+                name=data['name'],
+                cuisine=data['cuisine']
+            )
+            db.session.add(new_restaurant)
+            db.session.commit()
+
+            response_data = {
+                'name': new_restaurant.name,
+                'cuisine': new_restaurant.cuisine,
+            }
+
+            return response_data, 201
+        except IntegrityError:
+            # Handle any integrity constraint violations (e.g., duplicate username)
+            db.session.rollback()
+            return {'error': ''}, 422
+        
+class MyRestaurants(Resource):
+    def get(self):
+        restaurants = []
+        user = User.query.filter(User.id == session.get('user_id')).first()
+        if user:
+            for res in user.restaurants:
+                add_res = {
+                    'id': res.id,
+                    'name': res.name,
+                    'cuisine': res.cuisine
+                }
+                restaurants.append(add_res)
+            return make_response(restaurants, 200)
+        else:
+            return {}, 401
+            
+
 
 class ReviewsIndex(Resource):
     def get(self):
@@ -102,6 +158,7 @@ class ReviewsIndex(Resource):
             return make_response(reviews, 200)
         else:
             return {}, 401
+            
         
     def post(self):
         if not session.get('user_id'):
@@ -130,7 +187,7 @@ class ReviewsIndex(Resource):
         except IntegrityError:
             # Handle any integrity constraint violations (e.g., duplicate username)
             db.session.rollback()
-            return {'error': 'Username already exists'}, 422
+            return {'error': ''}, 422
         
 
 class ReviewsById(Resource):
@@ -181,6 +238,9 @@ api.add_resource(Login, '/login', endpoint='login')
 api.add_resource(Logout, '/logout', endpoint='logout')
 api.add_resource(ReviewsIndex, '/reviews', endpoint='reviews')
 api.add_resource(ReviewsById, '/reviews/<int:id>')
+api.add_resource(AllRestaurants, '/all_restaurants', endpoint='all_restaurants')
+api.add_resource(MyRestaurants, '/my_restaurants', endpoint='my_restaurants')
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
