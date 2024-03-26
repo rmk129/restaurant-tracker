@@ -11,6 +11,8 @@ from config import bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
+    serialize_rules = ('-reviews.user',)
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, db.CheckConstraint('len(username) > 5'), nullable=False, unique=True)
     _password_hash = db.Column(db.String, db.CheckConstraint('len(password) > 5'))
@@ -21,6 +23,7 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<User {self.id}, {self.username}, {self._password_hash}>'
+        
     
     @hybrid_property
     def password_hash(self):
@@ -39,6 +42,8 @@ class User(db.Model, SerializerMixin):
 
 class Review(db.Model, SerializerMixin):
     __tablename__ = 'reviews'
+
+    serialize_rules = ('-user.reviews', '-restaurant.reviews',)
 
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer)
@@ -70,6 +75,8 @@ class Review(db.Model, SerializerMixin):
 
 class Restaurant(db.Model, SerializerMixin):
     __tablename__ = 'restaurants'
+
+    serialize_rules = ('-reviews.restaurant',)
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)

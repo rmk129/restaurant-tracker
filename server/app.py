@@ -29,7 +29,7 @@ class Signup(Resource):
 
         try:
             user = User(username=username)
-            user.password_hash = password
+            # user.password_hash = password
             db.session.add(user)
             db.session.commit()
 
