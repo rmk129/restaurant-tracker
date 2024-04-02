@@ -28,17 +28,15 @@ class Signup(Resource):
             return {'error': 'Username and password are required'}, 422
 
         try:
+            
             user = User(username=username)
-            # user.password_hash = password
+            user.password_hash = password
             db.session.add(user)
             db.session.commit()
 
             session['user_id'] = user.id
 
-            response =  {
-                'user_id': user.id,
-                'username': user.username
-            }, 201
+            response = user.to_dict(), 201
             return response
     
         except IntegrityError:
@@ -50,10 +48,7 @@ class CheckSession(Resource):
     def get(self):
         user = User.query.filter(User.id == session.get('user_id')).first()
         if user:
-            response =  {
-                'id': user.id,
-                'username': user.username
-            }, 200
+            response = user.to_dict(), 200
             return response
         else:
             return {}, 401
@@ -67,10 +62,7 @@ class Login(Resource):
 
         if user and user.authenticate(request.get_json().get('password')) == True:
             session['user_id'] = user.id
-            response =  {
-                'id': user.id,
-                'username': user.username
-            }, 200
+            response = user.to_dict(), 200
             return response
         else:
             return {}, 401
@@ -88,11 +80,7 @@ class AllRestaurants(Resource):
     def get(self):
         restaurants = []
         for res in Restaurant.query.all():
-            add_restaurant = {
-                'id': res.id,
-                'name': res.name,
-                'cuisine': res.cuisine
-            }
+            add_restaurant = res.to_dict()
             restaurants.append(add_restaurant)
         return make_response(restaurants, 200)
     
@@ -129,11 +117,7 @@ class MyRestaurants(Resource):
         user = User.query.filter(User.id == session.get('user_id')).first()
         if user:
             for res in user.restaurants:
-                add_res = {
-                    'id': res.id,
-                    'name': res.name,
-                    'cuisine': res.cuisine
-                }
+                add_res = res.to_dict()
                 restaurants.append(add_res)
             return make_response(restaurants, 200)
         else:
@@ -155,7 +139,7 @@ class ReviewsIndex(Resource):
                     }
                     reviews.append(add_review)
 
-            return make_response(reviews, 200)
+            return make_response(reviews.to_dict(), 200)
         else:
             return {}, 401
             
@@ -183,7 +167,7 @@ class ReviewsIndex(Resource):
                 'user': user.username
             }
 
-            return response_data, 201
+            return response_data.to_dict(), 201
         except IntegrityError:
             # Handle any integrity constraint violations (e.g., duplicate username)
             db.session.rollback()
