@@ -26,8 +26,11 @@ export const AddRestaurants = ({allRes, setAllRes}) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values), //what is this?
-      }).then(
-        
+      }).then((r) => {
+        if (r.ok) {
+          r.json().then((resInfo)=> {console.log(resInfo)
+            setAllRes([...allRes, resInfo])
+        });
         }
       });
     },
@@ -59,27 +62,6 @@ export const AddRestaurants = ({allRes, setAllRes}) => {
         
         <button type="submit">Submit</button>
       </form>
-      <table style={{ padding: "15px" }}>
-        <tbody>
-          <tr>
-            <th>name</th>
-            <th>cuisine</th>
-          </tr>
-          {/* {customers === "undefined" ? (
-            <p>Loading</p>
-          ) : (
-            customers.map((customer, i) => (
-              <>
-                <tr key={i}>
-                  <td>{customer.name}</td>
-                  <td>{customer.email}</td>
-                  <td>{customer.age}</td>
-                </tr>
-              </>
-            ))
-          )} */}
-        </tbody>
-      </table>
     </div>
   );
 };

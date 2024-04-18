@@ -100,12 +100,9 @@ class AllRestaurants(Resource):
             db.session.add(new_restaurant)
             db.session.commit()
 
-            response_data = {
-                'name': new_restaurant.name,
-                'cuisine': new_restaurant.cuisine,
-            }
+           
 
-            return response_data, 201
+            return new_restaurant.to_dict(), 201
         except IntegrityError:
             # Handle any integrity constraint violations (e.g., duplicate username)
             db.session.rollback()

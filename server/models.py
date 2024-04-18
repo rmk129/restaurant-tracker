@@ -90,8 +90,9 @@ class Restaurant(db.Model, SerializerMixin):
         categories = ["Chinese", "Indian", "Thai", "Greek", "Asian", "Brazillian", "Lebanese", "Italian", "Mexican",
                       "German", "Caribbean", "Japanese", "Spanish", "American", "African", "French", "Other"]
         y = ""
+        print(f'hello cuisine: {cuisine}')
         for c in categories:
-            if cuisine == c:
+            if cuisine.lower() == c.lower():
                 y = "yes"
         if not y:
             raise ValueError("Cuisine needs to be listed in the category")
