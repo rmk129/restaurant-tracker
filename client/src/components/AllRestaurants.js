@@ -1,10 +1,15 @@
 
 
 function AllRestaurants({allRes}){
-    const userHeadings = allRes.map((user) => {
+    
+    const resHeadings = allRes.map((res) => {
+        console.log(res)
         return (
-        <div>
-        <li key={user.id}>{user.name} Cuisine:{user.cuisine}</li>
+        <div key={res.id}>
+        <li>{res.name} Cuisine:{res.cuisine}</li>
+        {res.reviews.map((rev)=> 
+        <ol key={rev.id}>Review: {rev.message}    Rating:{rev.score}</ol>
+    )}
         
         </div>
     )
@@ -12,7 +17,7 @@ function AllRestaurants({allRes}){
 
       return (
         <div>
-            {userHeadings}
+            {resHeadings}
         </div>
       )
     

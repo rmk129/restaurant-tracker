@@ -9,7 +9,7 @@ import { AddRestaurants } from "./AddRestaurant";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [allRes, setAllRes] = useState()
+  const [allRes, setAllRes] = useState([])
 
   useEffect(() => {
     fetch("/check_session").then((r) => {
@@ -41,7 +41,7 @@ function App() {
               <AllRestaurants allRes={allRes}/>
             </Route>
             <Route path="/addrestaurants">
-              <AddRestaurants allRes={allRes}/>
+              <AddRestaurants setAllRes={setAllRes} allRes={allRes}/>
             </Route>
           </Switch>
         ) : (

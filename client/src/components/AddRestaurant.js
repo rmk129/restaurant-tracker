@@ -2,27 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-export const AddRestaurants = ({allRes}) => {
-  const [customers, setCustomers] = useState([{}]);
-  const [refreshPage, setRefreshPage] = useState(false);
-  // Pass the useFormik() hook initial form values and a submit function that will
-  // be called when the form is submitted
+export const AddRestaurants = ({allRes, setAllRes}) => {
+  
 
-//   useEffect(() => {
-//     console.log("FETCH! ");
-//     fetch("/customers")
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setCustomers(data);
-//         console.log(data);
-//       });
-//   }, [refreshPage]);
-  //what is this?
 
   const formSchema = yup.object().shape({
     name: yup.string().required("Must enter a name").max(20),
     cuisine: yup.string().required("Must enter cusine").max(15),
     //how to validate cuisine list?
+    //come back to this
   });
 
   const formik = useFormik({
@@ -37,10 +25,9 @@ export const AddRestaurants = ({allRes}) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values, null, 2), //what is this?
-      }).then((res) => {
-        if (res.status == 200) {
-          setRefreshPage(!refreshPage);
+        body: JSON.stringify(values), //what is this?
+      }).then(
+        
         }
       });
     },
