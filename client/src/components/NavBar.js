@@ -12,13 +12,17 @@ function NavBar({ user, setUser }) {
 
   return (
     <header>
+      <div><h1>Restaurant Tracker</h1></div>
       <div>
         <Link to="/">Home</Link>
       </div>
-      <div><h1>Restaurant Tracker</h1></div>
       <div>
         {user ? (
+          <>
+          <Link to="/allrestaurants">All Restaurants</Link>
+          <Link to="/addrestaurants">Add Restaurant</Link>
           <button onClick={handleLogoutClick}>Logout</button>
+          </>
         ) : (
           <>
             <Link to="/signup">Signup</Link>
