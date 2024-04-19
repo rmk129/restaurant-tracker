@@ -38,7 +38,7 @@ function App() {
               <Home user={user}/>
             </Route>
             <Route path="/allrestaurants">
-              <AllRestaurants allRes={allRes}/>
+              <AllRestaurants user={user} allRes={allRes}/>
             </Route>
             <Route path="/addrestaurants">
               <AddRestaurants setAllRes={setAllRes} allRes={allRes}/>

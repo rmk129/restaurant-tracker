@@ -151,7 +151,7 @@ class ReviewsIndex(Resource):
             new_review = Review(
                 score=data['score'],
                 message=data['message'],
-                user_id=user.id,
+                user=user,
                 restaurant_id=data['restaurant_id']
             )
 
@@ -161,7 +161,8 @@ class ReviewsIndex(Resource):
             response_data = {
                 'score': new_review.score,
                 'message': new_review.message,
-                'user': user.username
+                'user': user,
+                'restaurant_id':new_review.restaurant_id
             }
 
             return response_data.to_dict(), 201
