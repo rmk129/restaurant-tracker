@@ -8,7 +8,7 @@ function AllRestaurants({allRes}){
         <div key={res.id}>
         <li>{res.name} Cuisine:{res.cuisine}</li>
         {res.reviews.map((rev)=> 
-        <ol key={rev.id}>Review: {rev.message}    Rating:{rev.score}</ol>
+        <ol key={rev.id}>Review: {rev.message}  <br></br>  Rating:{rev.score}</ol>
     )}
         
         </div>

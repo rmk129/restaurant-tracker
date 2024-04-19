@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useHistory } from "react-router-dom";
+
 export const AddRestaurants = ({allRes, setAllRes}) => {
-  
+    const history = useHistory();
 
 
   const formSchema = yup.object().shape({
@@ -29,7 +31,8 @@ export const AddRestaurants = ({allRes, setAllRes}) => {
       }).then((r) => {
         if (r.ok) {
           r.json().then((resInfo)=> {console.log(resInfo)
-            setAllRes([...allRes, resInfo])
+            setAllRes([...allRes, resInfo]);
+            history.push("/allrestaurants")
         });
         }
       });
