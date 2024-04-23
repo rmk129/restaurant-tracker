@@ -206,10 +206,11 @@ class ReviewsById(Resource):
                 db.session.delete(rev)
                 db.session.commit()
 
-            response_dict = {"message": "review successfully deleted"}
-            response = make_response(response_dict, 200)
-            return response
-
+            restaurants = []
+            for res in Restaurant.query.all():
+                add_restaurant = res.to_dict()
+                restaurants.append(add_restaurant)
+            return make_response(restaurants, 200)    
 
     
 
