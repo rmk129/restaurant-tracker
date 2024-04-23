@@ -11,7 +11,7 @@ function AllRestaurants({allRes, user, setAllRes}){
         // <ol key={rev.id}>Review: {rev.message}  <br></br>  Rating:{rev.score}</ol>
          <Reviews key={rev.id}  rev={rev} user={user} setAllRes={setAllRes} />   
     )}
-        <AddReview user={user} res={res}/>
+        <AddReview user={user} res={res} setAllRes={setAllRes} />
         </div>
     )
       });

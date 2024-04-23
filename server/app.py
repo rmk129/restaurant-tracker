@@ -158,14 +158,11 @@ class ReviewsIndex(Resource):
             db.session.add(new_review)
             db.session.commit()
 
-            response_data = {
-                'score': new_review.score,
-                'message': new_review.message,
-                'user': user,
-                'restaurant_id':new_review.restaurant_id
-            }
-
-            return response_data.to_dict(), 201
+            restaurants = []
+            for res in Restaurant.query.all():
+                add_restaurant = res.to_dict()
+                restaurants.append(add_restaurant)
+            return make_response(restaurants, 200)  
         except IntegrityError:
             # Handle any integrity constraint violations (e.g., duplicate username)
             db.session.rollback()

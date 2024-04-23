@@ -3,13 +3,13 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { useHistory } from "react-router-dom";
 
-export const AddReview = ({user, res}) => {
+export const AddReview = ({user, res, setAllRes}) => {
     const history = useHistory();
 
 
   const formSchema = yup.object().shape({
-    message: yup.string().required("Must enter a review").max(30),
-    score: yup.string().required("Must enter score").max(),
+    message: yup.string().required("Must enter a review").min(10).max(200),
+    score: yup.number().required("Must enter score").max(10),
    
   });
 
@@ -22,24 +22,25 @@ export const AddReview = ({user, res}) => {
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
-        console.log('fetch')
+      // Convert the score to an integer using parseInt()
+      values.score = parseInt(values.score);
+  
       fetch("/reviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values), //what is this?
+        body: JSON.stringify(values),
       }).then((r) => {
         if (r.ok) {
-          r.json().then((resInfo)=> {console.log(resInfo)
-            // setAllRes([...allRes, resInfo]);
-            // history.push("/allrestaurants")
-        });
+          r.json().then((resInfo) => {
+            setAllRes(resInfo);
+            // Rest of your code...
+          });
         }
       });
     },
-  }
-);
+  });
 
   return (
     <div>
@@ -53,7 +54,7 @@ export const AddReview = ({user, res}) => {
           onChange={formik.handleChange}
           value={formik.values.message}
         />
-        <p style={{ color: "red" }}> {formik.errors.name}</p>
+        <p style={{ color: "red" }}> {formik.errors.message}</p>
 
         <label htmlFor="score">Score</label>
         <br />
@@ -63,7 +64,7 @@ export const AddReview = ({user, res}) => {
           onChange={formik.handleChange}
           value={formik.values.score}
         />
-        <p style={{ color: "red" }}> {formik.errors.cuisine}</p>
+        <p style={{ color: "red" }}> {formik.errors.score}</p>
         
         <button type="submit">Submit</button>
       </form>
