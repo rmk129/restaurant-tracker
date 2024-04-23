@@ -1,10 +1,10 @@
-
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useHistory } from "react-router-dom";
 
-
-export const AddReview = ({user, res, setAllRes}) => {
-
+export const UpdateReview = ({rev, setAllRes, setShowUpdateReview}) => {
+    const history = useHistory();
 
 
   const formSchema = yup.object().shape({
@@ -15,18 +15,18 @@ export const AddReview = ({user, res, setAllRes}) => {
 
   const formik = useFormik({
     initialValues: {
-      message: "",
-      score: "",
-      user: user,
-      restaurant_id: res.id
+      message: rev.message,
+      score: rev.score,
+      user: rev.user,
+      restaurant_id: rev.restaurant_id
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
       // Convert the score to an integer using parseInt()
       values.score = parseInt(values.score);
   
-      fetch("/reviews", {
-        method: "POST",
+      fetch("/reviews/" + rev.id, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -35,6 +35,8 @@ export const AddReview = ({user, res, setAllRes}) => {
         if (r.ok) {
           r.json().then((resInfo) => {
             setAllRes(resInfo);
+            setShowUpdateReview(false)
+
             // Rest of your code...
           });
         }
