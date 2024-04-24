@@ -184,17 +184,19 @@ class ReviewsById(Resource):
         if user:
             rev = Review.query.filter_by(id=id).first()
             if user.id == rev.user_id:
-                for attr in request.form:
-                    setattr(rev, attr, request.form[attr])
+                data = request.get_json()  # Access the data from the request body
 
-            db.session.add(rev)
-            db.session.commit()
 
-            response_dict = rev.to_dict()
+                for attr, value in data.items():
+                    setattr(rev, attr, value)
 
-            response = make_response(response_dict, 200)
-            return response
-        
+                db.session.commit()
+
+                response_dict = rev.to_dict()
+
+                response = make_response(response_dict, 200)
+                return response
+
     def delete(self, id):
         user = User.query.filter(User.id == session.get('user_id')).first()
         if user:

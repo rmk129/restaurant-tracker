@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UpdateReview } from "./UpdateReview";
 
-function Reviews({ rev, user, setAllRes }) {
+function Reviews({ rev, user, setAllRes, allRes }) {
   const [showUpdateReview, setShowUpdateReview] = useState(false);
 
     function handleDeleteClick(e){
@@ -29,21 +29,20 @@ function Reviews({ rev, user, setAllRes }) {
 
     function handleUpdateClick() {
         setShowUpdateReview(true);
-        console.log(rev)
     }
 
     const deleteButton = user.id === rev.user.id ? <button value={JSON.stringify(rev)} onClick={handleDeleteClick}>Delete Review</button> : null
     const updateButton = user.id === rev.user.id ? <button value={JSON.stringify(rev)} onClick={handleUpdateClick}>Update Review</button> : null
-
+    // const colorStyle = user.id === rev.user.id ? "color:red" : null
     return (
         <div>
-          <ol>
+          <ol  >
             Review: {rev.message} <br />
             Rating: {rev.score}
           </ol>
           {deleteButton}
           {updateButton}
-          {showUpdateReview && <UpdateReview rev={rev} setAllRes={setAllRes} setShowUpdateReview={setShowUpdateReview} />}
+          {showUpdateReview && <UpdateReview rev={rev} setAllRes={setAllRes} setShowUpdateReview={setShowUpdateReview} allRes={allRes} />}
         </div>
       );
 

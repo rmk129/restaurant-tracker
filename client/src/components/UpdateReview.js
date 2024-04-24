@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { useHistory } from "react-router-dom";
 
-export const UpdateReview = ({rev, setAllRes, setShowUpdateReview}) => {
+export const UpdateReview = ({rev, setAllRes, setShowUpdateReview, allRes}) => {
     const history = useHistory();
 
 
@@ -15,8 +15,8 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview}) => {
 
   const formik = useFormik({
     initialValues: {
-      message: rev.message,
-      score: rev.score,
+      message: "",
+      score: "",
       user: rev.user,
       restaurant_id: rev.restaurant_id
     },
@@ -34,7 +34,8 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview}) => {
       }).then((r) => {
         if (r.ok) {
           r.json().then((resInfo) => {
-            setAllRes(resInfo);
+            console.log(allRes)
+            console.log(resInfo);
             setShowUpdateReview(false)
 
             // Rest of your code...
@@ -55,6 +56,7 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview}) => {
           name="message"
           onChange={formik.handleChange}
           value={formik.values.message}
+          placeholder={rev.message}
         />
         <p style={{ color: "red" }}> {formik.errors.message}</p>
 
@@ -65,6 +67,7 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview}) => {
           name="score"
           onChange={formik.handleChange}
           value={formik.values.score}
+          placeholder={rev.score}
         />
         <p style={{ color: "red" }}> {formik.errors.score}</p>
         

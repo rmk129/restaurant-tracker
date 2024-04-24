@@ -8,7 +8,7 @@ function AllRestaurants({allRes, user, setAllRes}){
         <div key={res.id}>
         <li>{res.name} Cuisine:{res.cuisine}</li>
         {res.reviews.map((rev)=> 
-         <Reviews key={rev.id}  rev={rev} user={user} setAllRes={setAllRes} />   
+         <Reviews key={rev.id}  rev={rev} user={user} setAllRes={setAllRes} allRes={allRes} />   
     )}
         <AddReview user={user} res={res} setAllRes={setAllRes} />
         </div>
