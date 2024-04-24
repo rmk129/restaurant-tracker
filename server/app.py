@@ -184,12 +184,14 @@ class ReviewsById(Resource):
         if user:
             rev = Review.query.filter_by(id=id).first()
             if user.id == rev.user_id:
-                data = request.get_json()  # Access the data from the request body
+                data = request.get_json()
+                print(data)  # Access the data from the request body
 
 
-                for attr, value in data.items():
-                    setattr(rev, attr, value)
-
+                for attr in data:
+                    if attr != "user":
+                        setattr(rev, attr, data[attr])
+                db.session.add(rev)
                 db.session.commit()
 
                 response_dict = rev.to_dict()

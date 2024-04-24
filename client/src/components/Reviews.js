@@ -33,10 +33,10 @@ function Reviews({ rev, user, setAllRes, allRes }) {
 
     const deleteButton = user.id === rev.user.id ? <button value={JSON.stringify(rev)} onClick={handleDeleteClick}>Delete Review</button> : null
     const updateButton = user.id === rev.user.id ? <button value={JSON.stringify(rev)} onClick={handleUpdateClick}>Update Review</button> : null
-    // const colorStyle = user.id === rev.user.id ? "color:red" : null
+    const colorStyle = user.id === rev.user.id ? { color: 'red' } : null;
     return (
         <div>
-          <ol  >
+          <ol style={colorStyle} >
             Review: {rev.message} <br />
             Rating: {rev.score}
           </ol>

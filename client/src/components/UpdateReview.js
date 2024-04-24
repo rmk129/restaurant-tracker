@@ -24,7 +24,7 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview, allRes}) => {
     onSubmit: (values) => {
       // Convert the score to an integer using parseInt()
       values.score = parseInt(values.score);
-  
+      console.log("before fetch")
       fetch("/reviews/" + rev.id, {
         method: "PATCH",
         headers: {
@@ -34,7 +34,6 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview, allRes}) => {
       }).then((r) => {
         if (r.ok) {
           r.json().then((resInfo) => {
-            console.log(allRes)
             console.log(resInfo);
             setShowUpdateReview(false)
 
