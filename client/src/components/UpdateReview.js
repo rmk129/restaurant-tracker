@@ -33,8 +33,23 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview, allRes}) => {
         body: JSON.stringify(values),
       }).then((r) => {
         if (r.ok) {
-          r.json().then((resInfo) => {
-            console.log(resInfo);
+          r.json().then((revInfo) => {
+            const data = allRes
+            data.map(function(res){
+              if (res.id === revInfo.restaurant_id){
+                console.log("res matches")
+                 res.reviews.map(function(rev){
+                    
+                    if (rev.id === revInfo.id){
+                        
+                          rev.message = revInfo.message
+                          rev.score = revInfo.score
+                          return rev
+                    }
+                 })
+              }
+            })
+            setAllRes(data)
             setShowUpdateReview(false)
 
             // Rest of your code...
@@ -47,6 +62,7 @@ export const UpdateReview = ({rev, setAllRes, setShowUpdateReview, allRes}) => {
   return (
     <div>
       <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
+       <h2>Update Review</h2> 
       <label htmlFor="message">Message</label>
         <br />
 

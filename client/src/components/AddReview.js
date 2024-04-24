@@ -45,6 +45,7 @@ export const AddReview = ({user, res, setAllRes}) => {
   return (
     <div>
       <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
+       <h2>Add Review!</h2> 
       <label htmlFor="message">Message</label>
         <br />
 
