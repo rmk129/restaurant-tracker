@@ -81,6 +81,9 @@ class Restaurant(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     cuisine = db.Column(db.String, nullable=False)
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+
+    location = db.relationship('Location', back_populates="restaurants")
 
     reviews = db.relationship('Review', back_populates="restaurant", cascade='all, delete-orphan')
     users = association_proxy('reviews', 'User', creator=lambda user_obj: Review(user=user_obj))
@@ -101,6 +104,18 @@ class Restaurant(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Restaurant {self.id}, {self.name}, {self.cuisine}>'
+    
+
+class Location(db.Model, SerializerMixin):
+    __tablename__ = 'locations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.String, nullable=False, unique=True)
+
+    restaurants = db.relationship('Restaurant', back_populates="location")
+
+    def __repr__(self):
+        return f'<Location {self.id}, {self.location}>'
 
 
     

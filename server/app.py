@@ -212,6 +212,7 @@ class ReviewsById(Resource):
                 add_restaurant = res.to_dict()
                 restaurants.append(add_restaurant)
             return make_response(restaurants, 200)    
+        
 
     
 
