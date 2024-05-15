@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 # Local imports
 from config import app, db, api
-from models import User, Restaurant, Review
+from models import User, Restaurant, Review, Location
 # Add your model imports
 
 
@@ -212,6 +212,37 @@ class ReviewsById(Resource):
                 add_restaurant = res.to_dict()
                 restaurants.append(add_restaurant)
             return make_response(restaurants, 200)    
+        
+class AllLocations(Resource):
+    def get(self):
+        locations = []
+        for loc in Location.query.all():
+            add_location = loc.to_dict()
+            locations.append(add_location)
+        return make_response(locations, 200)
+    
+    def post(self):
+        data = request.get_json()
+        name = data['name']
+        for loc in Location.query.all():
+            if loc.name.lower() == name.lower():
+                response = {"message": "Location already exists in the system"}
+                return make_response(response)
+            
+        try:
+            new_location = Location(
+                location=data['name'],
+            )
+            db.session.add(new_location)
+            db.session.commit()
+
+           
+
+            return new_location.to_dict(), 201
+        except IntegrityError:
+            # Handle any integrity constraint violations (e.g., duplicate username)
+            db.session.rollback()
+            return {'error': ''}, 422
         
 
     

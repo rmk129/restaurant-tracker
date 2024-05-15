@@ -76,7 +76,7 @@ class Review(db.Model, SerializerMixin):
 class Restaurant(db.Model, SerializerMixin):
     __tablename__ = 'restaurants'
 
-    serialize_rules = ('-reviews.restaurant',)
+    serialize_rules = ('-reviews.restaurant', '-location.restaurants')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
@@ -108,6 +108,8 @@ class Restaurant(db.Model, SerializerMixin):
 
 class Location(db.Model, SerializerMixin):
     __tablename__ = 'locations'
+
+    serialize_rules = ('-restaurants.location')
 
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.String, nullable=False, unique=True)

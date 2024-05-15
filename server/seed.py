@@ -8,7 +8,7 @@ from faker import Faker
 
 # Local imports
 from app import app
-from models import db, User, Review, Restaurant
+from models import db, User, Review, Restaurant, Location
 
 if __name__ == '__main__':
     fake = Faker()
@@ -18,6 +18,7 @@ if __name__ == '__main__':
         Review.query.delete()
         User.query.delete()
         Restaurant.query.delete()
+        Location.query.delete()
 
 
         u1 = User(username = "restaurantsguy127", password_hash = "wjbffbw33" )
@@ -27,11 +28,17 @@ if __name__ == '__main__':
         db.session.add_all([u1, u2, u3, u4])
         db.session.commit()
 
-        r1 = Restaurant(name = "Rio's Tacos", cuisine = "Mexican")
-        r2 = Restaurant(name = "Emilio's Pizza", cuisine = "Italian")
-        r3 = Restaurant(name = "Royal India", cuisine = "Indian")
-        r4 = Restaurant(name = "Han Dynasty", cuisine = "Chinese")
-        r5 = Restaurant(name = "Bob's Burgers", cuisine = "American")
+        l1 = Location(location = "Upper East Side")
+        l2 = Location(location = "Upper West Side")
+        l3 = Location(location = "Midtown")
+        db.session.add_all([l1, l2, l3])
+        db.session.commit()
+
+        r1 = Restaurant(name = "Rio's Tacos", cuisine = "Mexican", location = l1)
+        r2 = Restaurant(name = "Emilio's Pizza", cuisine = "Italian", location = l2)
+        r3 = Restaurant(name = "Royal India", cuisine = "Indian", location = l3)
+        r4 = Restaurant(name = "Han Dynasty", cuisine = "Chinese", location = l1)
+        r5 = Restaurant(name = "Bob's Burgers", cuisine = "American", location = l2)
         db.session.add_all([r1, r2, r3, r4, r5])
         db.session.commit()
 
