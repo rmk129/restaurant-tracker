@@ -21,6 +21,7 @@ function NavBar({ user, setUser }) {
           <>
           <Link to="/allrestaurants">All Restaurants</Link>
           <Link to="/addrestaurants">Add Restaurant</Link>
+          <Link to="/locations">Locations</Link>
           <button onClick={handleLogoutClick}>Logout</button>
           </>
         ) : (

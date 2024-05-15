@@ -223,15 +223,15 @@ class AllLocations(Resource):
     
     def post(self):
         data = request.get_json()
-        name = data['name']
+        location = data['location']
         for loc in Location.query.all():
-            if loc.name.lower() == name.lower():
+            if loc.location.lower() == location.lower():
                 response = {"message": "Location already exists in the system"}
                 return make_response(response)
             
         try:
             new_location = Location(
-                location=data['name'],
+                location=data['location'],
             )
             db.session.add(new_location)
             db.session.commit()
@@ -247,7 +247,7 @@ class AllLocations(Resource):
 
     
 
-
+api.add_resource(AllLocations, '/all_locations', endpoint='all_locations')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 api.add_resource(Login, '/login', endpoint='login')

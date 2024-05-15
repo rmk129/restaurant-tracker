@@ -1,71 +1,83 @@
-
 import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { useHistory } from "react-router-dom";
 
-export const AddRestaurants = ({allRes, setAllRes}) => {
-    const history = useHistory();
-
+export const AddRestaurants = ({ allRes, setAllRes, allLoc }) => {
+  const history = useHistory();
+  const allLocations = allLoc
 
   const formSchema = yup.object().shape({
     name: yup.string().required("Must enter a name").max(20),
-    cuisine: yup.string().required("Must enter cusine").max(15),
-    //how to validate cuisine list?
-    //come back to this
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      name: "",
-      cuisine: "",
-    },
-    validationSchema: formSchema,
-    onSubmit: (values) => {
-      console.log('fetch')
-      fetch("/all_restaurants", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values), //what is this?
-      }).then((r) => {
-        if (r.ok) {
-          r.json().then((resInfo)=> {console.log(resInfo)
-            setAllRes([...allRes, resInfo]);
-            history.push("/allrestaurants")
-        });
-        }
-      });
-    },
+    cuisine: yup.string().required("Must enter cuisine").max(15),
+    location: yup.string().required("Must select a location"),
   });
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
-      <label htmlFor="name">Name</label>
-        <br />
-
-        <input
-          id="name"
-          name="name"
-          onChange={formik.handleChange}
-          value={formik.values.name}
-        />
-        <p style={{ color: "red" }}> {formik.errors.name}</p>
-
-        <label htmlFor="cuisine">Cuisine</label>
-        <br />
-        <input
-          id="cuisine"
-          name="cuisine"
-          onChange={formik.handleChange}
-          value={formik.values.cuisine}
-        />
-        <p style={{ color: "red" }}> {formik.errors.cuisine}</p>
-        
-        <button type="submit">Submit</button>
-      </form>
+      <h1>Add Restaurant</h1>
+      <Formik
+        initialValues={{
+          name: "",
+          cuisine: "",
+          location: "",
+        }}
+        validationSchema={formSchema}
+        onSubmit={(values) => {
+          fetch("/all_restaurants", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(values),
+          })
+            .then((r) => {
+              if (r.ok) {
+                return r.json();
+              }
+              throw new Error("Network response was not ok.");
+            })
+            .then((resInfo) => {
+              setAllRes([...allRes, resInfo]);
+              history.push("/allrestaurants");
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }}
+      >
+        {({ errors, touched }) => (
+          <Form>
+            <div>
+              <label htmlFor="name">Name</label>
+              <br />
+              <Field type="text" id="name" name="name" />
+              <ErrorMessage name="name" component="div" style={{ color: "red" }} />
+            </div>
+            <div>
+              <label htmlFor="cuisine">Cuisine</label>
+              <br />
+              <Field type="text" id="cuisine" name="cuisine" />
+              <ErrorMessage name="cuisine" component="div" style={{ color: "red" }} />
+            </div>
+            <div>
+              <label htmlFor="location">Location</label>
+              <br />
+              <Field as="select" id="location" name="location">
+                <option value="">Select Location</option>
+                {allLocations &&
+                  allLocations.map((location) => (
+                    <option key={location.id} value={location.id}>
+                      {location.location}
+                    </option>
+                  ))}
+              </Field>
+              <ErrorMessage name="location" component="div" style={{ color: "red" }} />
+            </div>
+            <button type="submit">Submit</button>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

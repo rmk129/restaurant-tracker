@@ -4,12 +4,14 @@ import SignUp from "./SignUp";
 import Login from "./Login";
 import NavBar from "./NavBar";
 import Home from "./Home";
+import { Locations } from "./Locations";
 import AllRestaurants from "./AllRestaurants";
 import { AddRestaurants } from "./AddRestaurant";
 
 function App() {
   const [user, setUser] = useState(null);
   const [allRes, setAllRes] = useState([])
+  const [allLoc, setAllLoc] = useState([])
 
   useEffect(() => {
     fetch("/check_session").then((r) => {
@@ -26,6 +28,15 @@ function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    fetch("/all_locations").then((r) => {
+      if (r.ok) {
+        r.json().then((locInfo)=> setAllLoc(locInfo));
+      }
+    });
+  }, []);
+
   
 
   return (
@@ -41,7 +52,10 @@ function App() {
               <AllRestaurants user={user} allRes={allRes} setAllRes={setAllRes}/>
             </Route>
             <Route path="/addrestaurants">
-              <AddRestaurants setAllRes={setAllRes} allRes={allRes}/>
+              <AddRestaurants setAllRes={setAllRes} allRes={allRes} allLoc={allLoc}/>
+            </Route>
+            <Route path="/locations">
+              <Locations allLoc={allLoc}  setAllLoc={setAllLoc} />
             </Route>
           </Switch>
         ) : (
