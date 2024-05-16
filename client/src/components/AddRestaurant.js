@@ -20,7 +20,7 @@ export const AddRestaurants = ({ allRes, setAllRes, allLoc }) => {
         initialValues={{
           name: "",
           cuisine: "",
-          location: "",
+          location:"",
         }}
         validationSchema={formSchema}
         onSubmit={(values) => {
@@ -38,7 +38,9 @@ export const AddRestaurants = ({ allRes, setAllRes, allLoc }) => {
               throw new Error("Network response was not ok.");
             })
             .then((resInfo) => {
+              console.log(resInfo)
               setAllRes([...allRes, resInfo]);
+              console.log(allRes)
               history.push("/allrestaurants");
             })
             .catch((error) => {

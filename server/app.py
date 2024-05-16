@@ -95,7 +95,8 @@ class AllRestaurants(Resource):
         try:
             new_restaurant = Restaurant(
                 name=data['name'],
-                cuisine=data['cuisine']
+                cuisine=data['cuisine'],
+                location_id=data['location']
             )
             db.session.add(new_restaurant)
             db.session.commit()

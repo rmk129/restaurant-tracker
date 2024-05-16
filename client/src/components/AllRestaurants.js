@@ -3,7 +3,7 @@ import Reviews from "./Reviews";
 
 function AllRestaurants({allRes, user, setAllRes}){
     
-    const resHeadings = allRes.map((res) => {
+    const resHeadings = allRes?.map((res) => {
         return (
         <div key={res.id}>
         <li>{res.name} / Cuisine:{res.cuisine} / Location: {res.location.location}</li>
