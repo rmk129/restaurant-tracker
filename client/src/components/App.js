@@ -7,11 +7,19 @@ import Home from "./Home";
 import { Locations } from "./Locations";
 import AllRestaurants from "./AllRestaurants";
 import { AddRestaurants } from "./AddRestaurant";
+import UserState from "./UserState";
+
+
 
 function App() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const [allRes, setAllRes] = useState([])
   const [allLoc, setAllLoc] = useState([])
+
+  // const {updatedUser} = UserState((state)=> state.updateUser)
+  const {user, removeUser, setUser } = UserState()
+
+  
 
   useEffect(() => {
     fetch("/check_session").then((r) => {
@@ -37,7 +45,7 @@ function App() {
     });
   }, []);
 
-  
+ 
 
   return (
     <>
@@ -64,7 +72,7 @@ function App() {
               <SignUp setUser={setUser} />
             </Route>
             <Route path="/login">
-              <Login setUser={setUser} />
+              <Login setUser={setUser} user={user} />
             </Route>
             <Route exact path="/">
               <Home />

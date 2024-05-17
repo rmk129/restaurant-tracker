@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import UserState from "./UserState";
 
-function Login({ setUser }) {
+function Login({ setUser, user}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -16,7 +17,8 @@ function Login({ setUser }) {
       body: JSON.stringify({ username, password }),
     }).then((r) => {
       if (r.ok) {
-        r.json().then((user) => setUser(user));
+        r.json().then((user1) => setUser(user1));
+        console.log(user)
         history.push("/");
       }
     });
